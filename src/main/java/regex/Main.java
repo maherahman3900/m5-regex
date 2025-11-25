@@ -38,7 +38,17 @@ public class Main {
      * @return whether the string satisfies the password requirements
      */
     public static boolean checkForPassword(String str, int minLength) {
-        final boolean propertyOne = Pattern.matches("REPLACE WITH CORRECT REGEX", str);
+        // avoid error for str being null and also check for the minimum length
+        if (str == null || str.length() < minLength) {
+            return false;
+        }
+
+        final boolean propertyOne = Pattern.matches(".*[a-z].*", str)
+                && Pattern.matches(".*[A-Z].*", str)
+                && Pattern.matches(".*[0-9].*", str);
+
+        // ".*[a-z].*" means anything (.*) and then a lower case letter ([a-z]) and then anything (.*)
+
         // as needed, modify this code.
         return propertyOne;
     }
@@ -55,7 +65,17 @@ public class Main {
      * @return a list containing the email addresses in the string.
      */
     public static List<String> extractEmails(String str) {
-        final Pattern pattern = Pattern.compile("REPLACE WITH CORRECT REGEX");
+        // avoid pattern.matcher(str) throwing an error for str being null
+        if (str == null) {
+            return new ArrayList<>();
+        }
+
+        final Pattern pattern = Pattern.compile("[\\S]+@(mail\\.utoronto\\.ca|utoronto\\.ca)");
+        // no ^$, so the email can occur anywhere in the string
+        // \\S means any non-space character, and the []+ says 1 or more
+        // use \\. to get the string ".", since . in regex means any character
+        // use | for or
+
         final Matcher matcher = pattern.matcher(str);
         final List<String> result = new ArrayList<>();
         while (matcher.find()) {
@@ -76,6 +96,14 @@ public class Main {
      * @return whether str contains the same capital letter twice.
      */
     public static boolean checkForDoubles(String str) {
-        return str.matches("replace with correct regex");
+        if (str == null) {
+            return false;
+        }
+        return str.matches(".*([A-Z]).*\\1.*");
+        // .* means any characters 0 or more times
+        // [A-Z] means choose a random capital letter, () saves that letter to group 1
+        // .* so that you can have anything in between the two capitals
+        // \\1 says the capital from before has to repeat
+        // .* so that you can have anything at the end
     }
 }
